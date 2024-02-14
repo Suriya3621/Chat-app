@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const io = socketio(server,{cors: { origin: '*' }})
 
 // End point
-app.get('/',(req,res) => {
+app.get('*',(req,res) => {
   res.json("Api is working");
 })
 
