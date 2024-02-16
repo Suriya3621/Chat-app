@@ -1,0 +1,12 @@
+.person{
+  border-color:#808080;
+ padding:10px;
+  height:50px;
+  width:50px;
+  border-radius:50%;
+}
+.detail{
+  margin:0px;
+  border:1px black solid;
+  overflow-y:hidden;
+}
