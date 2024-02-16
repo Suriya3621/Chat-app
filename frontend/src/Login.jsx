@@ -1,7 +1,6 @@
 import React,{useState} from "react";
 import {Link} from 'react-router-dom'
 import './Login.css';
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 const Login = () => {
  const [name,setName]= useState('')
  const [room,setRoom]= useState('')
