@@ -6,12 +6,12 @@ import Error from './Error';
 import Admin from './Admin';
 function App() {
     return (
-         <div>
-            <Routes>                                                                       <Route path="/" element={<Login />} />
-                                                  <Route path="*" element={<Error />} />
+      <div>
+        <Routes>                                                                       <Route path="/" element={<Login />} />
+                                                 
                                                      <Route path="/detail" element={<Admin />}/>
                                                     <Route path="/chat" element={<Chat />} />
-                                                                 </Routes>
+        <Route path="*" element={<Error />} />                                                     </Routes>
                                                                                                                                         </div>
                                        );
                                        }
