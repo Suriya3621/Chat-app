@@ -26,7 +26,7 @@ const Chat = () => {
 
         socket.emit('join', { user, room }, (err) => {
             if (err) {
-                // alert(err)
+                alert(err)
             }
         })
 
