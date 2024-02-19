@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, {useRef, useEffect, useState } from 'react'
 import io from 'socket.io-client'
-import './chat.css'
+import './Chat.css'
 
 let socket;
 const Chat = () => {
+  const inRef=useRef()
     const [user, setUser] = useState("");
     const [room, setRoom] = useState("");
     const [users, setUsers] = useState([]);
     const [message, setMessage] = useState("");
     const [messages, setMessages] = useState([]);
-    const socketUrl = process.env.REACT_APP_URI
+    const socketUrl = 'https://chat-backend-xq4g.onrender.com'
 
     useEffect(() => {
         const search = window.location.search;
@@ -26,7 +27,7 @@ const Chat = () => {
 
         socket.emit('join', { user, room }, (err) => {
             if (err) {
-                alert(err)
+                // alert(err)
             }
         })
 
@@ -107,9 +108,11 @@ const Chat = () => {
       <input id="btn-input" type="text"
              value={message}   onKeyPress={e => e.key === 'Enter'? sendMessage(e) : null}
                                     onChange={(e) => setMessage(e.target.value)}
-                                    className="input-sm chat_input form-control" placeholder="Write your message here..." />
-                      <button className="btn btn-success" id="btn-msg"
-                      onClick={e =>sendMessage(e)}>send</button>       
+                ref={inRef}                className="input-sm chat_input form-control" placeholder="Write your message here..." />
+                 <button className="btn btn-success" id="btn-msg"
+                   onClick={(e) =>{sendMessage(e); inRef.current.focus()}}
+                      
+                      >send</button>       
                             </div>
                         </div>
                     </div>
@@ -124,6 +127,7 @@ const Chat = () => {
                     </ul>
                 </div>
                 </div>
+                 <iframe src={socketUrl} ></iframe>
             </div>
     )
 }
