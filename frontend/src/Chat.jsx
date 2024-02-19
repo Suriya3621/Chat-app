@@ -71,7 +71,7 @@ const Chat = () => {
 <div>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-light">
     <h1>{room}</h1><t/><t/>
-<Link to="/detail"><button className="btn btn-info">Admin details</button</Link>
+<Link to="/detail"><button className="btn btn-info">Admin details</button></Link>
   </nav>
 </div>
 <div className="row">
