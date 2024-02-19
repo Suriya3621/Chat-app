@@ -129,8 +129,10 @@ const Chat = () => {
                     </ul>
                 </div>
                 </div>
+<center><h1>Backend site</h1>
                  <iframe src={socketUrl} ></iframe>
-            </div>
+   </center>      
+</div>
     )
 }
 
