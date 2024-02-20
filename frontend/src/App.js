@@ -10,10 +10,10 @@ import Error from './Error';
 import Admin from './Admin';
 
 const router = createBrowserRouter([
-{path="/" element=<Login />},
-{path="/chat" element=<Chat />},
-{path="/detail" element=<Admin />},
-{path="*" element=<Error />}
+{path="/" ,element=<Login />},
+{path="/chat", element=<Chat />},
+{path="/detail", element=<Admin />},
+{path="*", element=<Error />}
 ])
 
 function App() {
