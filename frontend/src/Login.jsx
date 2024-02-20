@@ -22,7 +22,6 @@ const Login = () => {
           <Link onClick={(name === '' || room === '') ? (e) => e.preventDefault() : null}
       to={`/chat?name=${name}&room=${room}`}>
       <button type="submit" class="btn btn-light"
-onClick={(!name)?alert("Name is require"):(!room)?alert("Room code is require"):null}
 >Enter Room</button>
 </Link>
 <br/>
