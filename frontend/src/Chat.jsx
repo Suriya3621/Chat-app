@@ -132,9 +132,7 @@ const socketUrl = 'https://chat-backend-xq4g.onrender.com/'
                     </ul>
                 </div>
                 </div>
-<center><h1>Backend site</h1>
-                 <iframe src={socketUrl} ></iframe>
-   </center>      
+    
 </div>
     )
 }
