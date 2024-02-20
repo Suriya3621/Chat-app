@@ -1,19 +1,24 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
 import Login from "./Login";
 import Chat from './Chat';
 import Error from './Error';
 import Admin from './Admin';
-function App() {
-    return (
-      <div>
-        <Routes>                                                                       <Route path="/" element={<Login />} />
-                                                 
-                                                     <Route path="/detail" element={<Admin />}/>
-                                                    <Route path="/chat" element={<Chat />} />
-        <Route path="*" element={<Error />} />                                                     </Routes>
-                                                                                                                                        </div>
-                                       );
-                                       }
 
-                                                                 export default App;
+const router = createBrowserRouter([
+{path="/" element=<Login />},
+{path="/chat" element=<Chat />} 
+{path="/detail" element=<Admin />},
+{path="*" element=<Error />}
+])
+
+function App() {
+
+ return (<RouterProvider router={router}/>  )                              
+ }
+
+                                                           export default App;
