@@ -1,140 +1,152 @@
-import React, {useRef, useEffect, useState } from 'react'
-import {Link} from 'react-router-dom' 
-import io from 'socket.io-client'
-import './chat.css'
+import React, { useRef, useEffect, useState } from 'react';
+import io from 'socket.io-client';
+import './chat.css';
+import { Link } from 'react-router-dom';
 
 let socket;
+
 const Chat = () => {
-  const inRef=useRef()
-    const [user, setUser] = useState("");
-    const [room, setRoom] = useState("");
-    const [users, setUsers] = useState([]);
-    const [message, setMessage] = useState("");
-    const [messages, setMessages] = useState([]);
-    const socketUrl = `${process.env.REACT_APP_URI}`
-if(socketUrl == ' ' || socketUrl == null){
-const socketUrl = 'https://chat-backend-xq4g.onrender.com/'
-}
+  const inRef = useRef();
+  const [user, setUser] = useState("");
+  const [room, setRoom] = useState("");
+  const [users, setUsers] = useState([]);
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
-    useEffect(() => {
-        const search = window.location.search;
-        const params = new URLSearchParams(search);
-        const user = params.get('name');
-        const room = params.get('room');
+  const socketUrl = 'https://chat-backend-xq4g.onrender.com';
 
-        setUser(user)
-        setRoom(room)
+  useEffect(() => {
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const user = params.get('name');
+    const room = params.get('room');
 
-        socket = io(socketUrl);
+    setUser(user);
+    setRoom(room);
 
+    socket = io(socketUrl);
 
+    socket.emit('join', { user, room }, (err) => {
+      if (err) {
+        // alert(err)
+      }
+    });
 
-        socket.emit('join', { user, room }, (err) => {
-            if (err) {
-                // alert(err)
-            }
-        })
+    return () => {
+      socket.disconnect();
+      socket.off();
+    };
+  }, [socketUrl, window.location.search]);
 
-        return () => {
-            // User leaves room
-            socket.disconnect();
+  useEffect(() => {
+    socket.on('message', msg => {
+      setMessages(prevMsg => [...prevMsg, msg]);
+      setLoading(false); // Set loading to false when messages are received
+      setTimeout(() => {
+        var div = document.getElementById("chat_body");
+        div.scrollTop = div.scrollHeight - div.clientWidth;
+      }, 10);
+    });
 
-            socket.off()
-        }
+    socket.on('roomMembers', usrs => {
+      setUsers(usrs);
+    });
+  }, []);
 
-    }, [socketUrl,window.location.search])
+  const sendMessage = (e) => {
+    e.preventDefault();
+    socket.emit('sendMessage', message, () => setMessage(""));
+    setLoading(true); // Set loading to true when sending message
+    setTimeout(() => {
+      var div = document.getElementById("chat_body");
+      div.scrollTop = div.scrollHeight;
+    }, 100);
+  };
 
-    useEffect(() => {
-        socket.on('message', msg => {
-            setMessages(prevMsg => [...prevMsg, msg])
+  return (
+    <div className="bg-dark">
+      <div>
+        <nav class="navbar navbar-expand-lg navbar-black bg-black text-light">
+          <h1>{room}</h1><t/><t/>
+          <Link to="/detail">
+            <button className="btn btn-info">Admin details</button>
+          </Link>
+        </nav>
+      </div>
+      <div className="row">
+        <div className="col-md chat-window" id="chat_window_1 ">
 
-            setTimeout(() => {
-
-                var div = document.getElementById("chat_body");
-                div.scrollTop = div.scrollHeight - div.clientWidth;
-            }, 10)
-        })
-
-        socket.on('roomMembers', usrs => {
-            setUsers(usrs)
-        })
-    }, [])
-
-    const sendMessage = (e) => {
-        e.preventDefault();
-        socket.emit('sendMessage', message, () => setMessage(""))
-        setTimeout(() => {
-            var div = document.getElementById("chat_body");
-            div.scrollTop = div.scrollHeight ;
-        }, 100)
-    }
-
-    return (
-   <div className="">
-<div>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-light">
-    <h1>{room}</h1><t/><t/>
-<Link to="/detail"><button className="btn btn-info">Admin details</button></Link>
-  </nav>
-</div>
-<div className="row">
- <div className="col-sm col-md chat-window" id="chat_window_1 bg-dark" >
-
-  <div className="col-xs-8 col-md-8 ">
-     <div className="panel-body msg_container_base" id="chat_body">
-                       {
-                                messages.map((e, i) => (
-                                    e.user === user?.toLowerCase() ? <>
-   <div key={i} className="row msg_container base_receive rounded">
-     <div className="col-xs-10 col-md ">
-                 <div className="messages msg_receive rounded-top rounded-left bg-primary text-light">
-                                
-                    <p>{e.text}</p>
-                                                    <time>{e.user}</time>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </> : <>
-    <div key={i} className="row msg_container base_sent">
-    <div className="col-xs-10 col-md">
-      <div className="messages msg_sent rounded bg-secondary text-light">
-                  <p>{e.text}</p>
-                                                    <time>{e.user}</time>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </>
-                                ))
-                            }
-
-                        </div>
-                        <div className="panel-footer">
-                            <div className="input-group">
-      <input id="btn-input" type="text"
-             value={message}   onKeyPress={e => e.key === 'Enter'? sendMessage(e) : null}
-                                    onChange={(e) => setMessage(e.target.value)}
-                ref={inRef}                className="input-sm chat_input form-control" placeholder="Write your message here..." />
-                 <button className="btn btn-success" id="btn-msg"
-                   onClick={(e) =>{sendMessage(e); inRef.current.focus()}}
-                      
-                      >send</button>       
-                            </div>
-                        </div>
-                    </div>
-                </div>
-       <div className="bg-dark text-light col-sm col-md col-xs-4 col-md-4 form-control ac">
-        <p>Active Users</p>
-                <ul className=" Activeuser">
-           {users.map((e, i) => (
-      <li key={i}>{e.user}</li>
-                            ))
-                        }
-                    </ul>
-                </div>
-                </div>
+          <div className="">
+            <div className="panel-body msg_container_base bg-dark" id="chat_body">
+              {loading ? (
+                // Render spinner while loading
+                
+    <div class="d-flex justify-content-center text-light">
+  <div class="spinner-border" role="status">
     
+  </div>
+<span class="sr-only">Loading...</span>
 </div>
-    )
-}
+              ) : (
+                messages.map((e, i) => (
+                  e.user === user?.toLowerCase() ? <>
+                    <div key={i} className="row msg_container base_receive rounded">
+                      <div className=" col-md ">
+                        <div className="messages msg_receive rounded-top rounded-left bg-primary text-light">
+                          <p>{e.text}</p>
+                          <time>{e.user}</time>
+                        </div>
+                      </div>
+                    </div>
+                  </> : <>
+                    <div key={i} className="row msg_container base_sent">
+                      <div className="col-md">
+                        <div className="messages msg_sent rounded bg-secondary text-light">
+                          <p>{e.text}</p>
+                          <time>{e.user}</time>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ))
+              )}
+
+            </div>
+            <div className="panel-footer">
+              <div className="input-group">
+                <input
+                  id="btn-input"
+                  type="text"
+                  value={message}
+                  onKeyPress={e => e.key === 'Enter' ? sendMessage(e) : null}
+                  onChange={(e) => setMessage(e.target.value)}
+                  ref={inRef}
+                  className="input-sm chat_input form-control"
+                  placeholder="Write your message here..."
+                />
+                <button
+                  className="btn btn-success"
+                  id="btn-msg"
+                  onClick={(e) => { sendMessage(e); inRef.current.focus() }}
+                >
+                  send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-dark text-light col-md col-md  form-control ac">
+          <p>Active Users</p>
+          <ul className=" Activeuser">
+            {users.map((e, i) => (
+              <li key={i}>{e.user}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Chat;
