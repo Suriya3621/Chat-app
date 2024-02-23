@@ -1,12 +1,10 @@
+
 .ac{
   overflow-y:hidden;
   overflow-x:hidden;
 }
 .Activeuser{
   margin-left:20px;
-}
-.col-md-2, .col-md-10{
-    padding:0;
 }
 .panel{
     margin-bottom: 0px;
