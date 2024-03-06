@@ -122,11 +122,11 @@ const Chat = () => {
                   onKeyPress={e => e.key === 'Enter' ? sendMessage(e) : null}
                   onChange={(e) => setMessage(e.target.value)}
                   ref={inRef}
-                  className="input-sm chat_input form-control"
+                  className="input-sm chat_input form-control uncolor"
                   placeholder="message here..."
                 />
                 <button
-                  className="btn text-success"
+                  className="btn uncolor text-success"
                   id="btn-msg"
                   onClick={(e) => { sendMessage(e); inRef.current.focus() }}
                 >
