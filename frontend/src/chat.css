@@ -3,10 +3,12 @@
  width:100;
 }
 .uncolor{
+  color:white;
   background-color:#282934;
 }
 
 .uncolor:hover{
+  color:white;
   background-color:#282934;
 }.ac{
   overflow-y:hidden;
