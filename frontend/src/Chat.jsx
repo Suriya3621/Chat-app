@@ -126,7 +126,7 @@ const Chat = () => {
                   placeholder="message here..."
                 />
                 <button
-                  className="btn"
+                  className="btn text-success"
                   id="btn-msg"
                   onClick={(e) => { sendMessage(e); inRef.current.focus() }}
                 >
