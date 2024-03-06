@@ -114,7 +114,7 @@ const Chat = () => {
 
             </div>
             <div className="panel-footer">
-              <div className="input-group">
+              <div className="input-group sendplace">
                 <input
                   id="btn-input"
                   type="text"
@@ -126,7 +126,7 @@ const Chat = () => {
                   placeholder="message here..."
                 />
                 <button
-                  className="btn uncolor text-success"
+                  className=" btn uncolor text-success"
                   id="btn-msg"
                   onClick={(e) => { sendMessage(e); inRef.current.focus() }}
                 >
