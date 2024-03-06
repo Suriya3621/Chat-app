@@ -123,14 +123,14 @@ const Chat = () => {
                   onChange={(e) => setMessage(e.target.value)}
                   ref={inRef}
                   className="input-sm chat_input form-control"
-                  placeholder="Write your message here..."
+                  placeholder="message here..."
                 />
                 <button
-                  className="btn btn-success"
+                  className="btn"
                   id="btn-msg"
                   onClick={(e) => { sendMessage(e); inRef.current.focus() }}
                 >
-                  send
+                  <i class="bi bi-send"></i>
                 </button>
               </div>
             </div>
