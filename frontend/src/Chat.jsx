@@ -114,7 +114,7 @@ const Chat = () => {
 
             </div>
             <div className="panel-footer">
-              <div className="input-group sendplace">
+              <div className="input-group mb-3 sendplace">
                 <input
                   id="btn-input"
                   type="text"
@@ -122,16 +122,18 @@ const Chat = () => {
                   onKeyPress={e => e.key === 'Enter' ? sendMessage(e) : null}
                   onChange={(e) => setMessage(e.target.value)}
                   ref={inRef}
-                  className="input-sm chat_input sendinput uncolor"
-                  placeholder="message here..."
+                  className="form-control chat_input sendinput uncolor"
+                  placeholder="Message here..."
                 />
-                <button
-                  className="btn uncolor text-success"
-                  id="btn-msg"
-                  onClick={(e) => { sendMessage(e); inRef.current.focus() }}
-                >
-                  <i className="bi bi-send"></i>
-                </button>
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-outline-success"
+                    id="btn-msg"
+                    onClick={(e) => { sendMessage(e); inRef.current.focus() }}
+                  >
+                    Send
+                  </button>
+                </div>
               </div>
             </div>
           </div>
