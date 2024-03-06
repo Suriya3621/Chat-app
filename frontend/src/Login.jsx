@@ -9,7 +9,7 @@ const Login = () => {
   <form>
   <br/>
     <div class="box container text-light">
-    <br/><p class="h2 text-light">Room Entree</p><br/>
+    <br/><p class="h2 text-light">Join the Room</p><br/>
       <input type="text" class="input " placeholder="Name"
       value={name}
       onChange={(e)=>setName(e.target.value)}
@@ -21,7 +21,7 @@ const Login = () => {
       /><br/><br/>
           <Link onClick={(name === '' || room === '') ? (e) => e.preventDefault() : null}
       to={`/chat?name=${name}&room=${room}`}>
-      <button type="submit" class="btn btn-light">Enter Room</button>
+      <button type="submit" class="btn btn-light">Join</button>
 </Link>
 <br/>
 </div>
