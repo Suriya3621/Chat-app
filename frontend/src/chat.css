@@ -22,7 +22,7 @@
 }
 .msg_container_base{
   padding: 0px 20px 5px;
-  max-height:550px;
+  height:550px;
   overflow-x:hidden;
 }
 .top-bar {
