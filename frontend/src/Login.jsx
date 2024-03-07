@@ -8,7 +8,7 @@ const Login = () => {
 <div class="background">
   <form>
   <br/>
-    <div class="box container text-light">
+    <div class="box container div text-light">
     <br/><p class="h2 text-light">Join the Room</p><br/>
       <input type="text" class="input " placeholder="Name"
       value={name}
