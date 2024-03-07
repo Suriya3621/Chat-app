@@ -23,6 +23,15 @@
 .chat-window{
   background-color:black;
 }
+.chatwin{
+  background:linear-gradient(
+  to bottom,
+ #d25aad,
+ #d25aad,
+ #9431d1,
+ #4793fe
+ );
+}
 .chat-window > div > .panel{
     border-radius: 5px 5px 0 0;
 }
@@ -133,4 +142,24 @@ img {
     position:fixed;
     left:0px;
     bottom:0;
+}
+.bt{
+  border:none;
+  background-color:transparent;
+}
+.sendplace input {
+  border:none;
+  outline:none;
+}
+.sendplace input:focus {
+  border:none;
+  outline:none;
+}
+.sendplace input:hover {
+  border:none;
+  outline:none;
+}
+.spin{
+  position:relative;
+  top:200px;
 }
