@@ -80,11 +80,11 @@ const Chat = () => {
         <div className="col-md chat-window" id="chat_window_1 ">
 
           <div className="">
-            <div className="panel-body msg_container_base bg-dark" id="chat_body">
+            <div className="panel-body msg_container_base chatwin" id="chat_body">
               {loading ? (
                 // Render spinner while loading
                 
-    <div className="d-flex justify-content-center text-light">
+    <div className="d-flex justify-content-center text-light spin">
       <div className="spinner-border" role="status"></div>
       <span className="sr-only">Loading...</span>
     </div>
@@ -113,8 +113,8 @@ const Chat = () => {
               )}
 
             </div>
-            <div className="panel-footer">
-              <div className="input-group mb-3 sendplace">
+            <div className="panel-footer sendplace">
+              <div className="input-group ">
                 <input
                   id="btn-input"
                   type="text"
@@ -124,14 +124,15 @@ const Chat = () => {
                   ref={inRef}
                   className="form-control chat_input sendinput uncolor"
                   placeholder="Message here..."
+                aria-describedby="basic-addon2"
                 />
                 <div className="input-group-append">
                   <button
-                    className="btn btn-outline-success"
-                    id="btn-msg"
+                    className="input-group-text bt btn-outline-light text-success"
+                    id="btn-msg basic-addon2"
                     onClick={(e) => { sendMessage(e); inRef.current.focus() }}
                   >
-                    Send
+                    <i class="bi bi-send"></i>
                   </button>
                 </div>
               </div>
