@@ -1,16 +1,7 @@
-.sendinput{
- outline:none;
- width:100%;
-}
-.uncolor{
-  color:white;
-  background-color:#282934;
-}
-
-.uncolor:hover{
-  color:white;
-  background-color:#282934;
-}.ac{
+ .ac{
+  width:50% ;
+  position:relative;
+  bottom:400px;
   overflow-y:hidden;
   overflow-x:hidden;
 }
@@ -40,7 +31,7 @@
 }
 .msg_container_base{
   padding: 0px 20px 5px;
-  height:550px;
+  height:650px;
   overflow-x:hidden;
 }
 .top-bar {
@@ -143,23 +134,32 @@ img {
     left:0px;
     bottom:0;
 }
-.bt{
-  border:none;
-  background-color:transparent;
-}
-.sendplace input {
-  border:none;
-  outline:none;
-}
-.sendplace input:focus {
-  border:none;
-  outline:none;
-}
-.sendplace input:hover {
-  border:none;
-  outline:none;
-}
+
 .spin{
   position:relative;
   top:200px;
+}
+.input-box{
+  position:relative;
+  
+  bottom:50px;
+  border:1px white solid;
+  width:90%;
+  padding:5px;
+  border-radius: 20px;
+}
+.input-box input{
+  background-color:transparent;
+  width:80%;
+  border:none;
+  outline:none;
+  float:left;
+}
+.input-box button{
+  border: none;
+  background-color:transparent;
+}
+.line {
+  width:100%;
+  height:5px;
 }
