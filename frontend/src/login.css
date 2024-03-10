@@ -1,39 +1,65 @@
-.div{
-color:white;
-}
-.background{
-  text-align:center;
-  background:linear-gradient(
-  to right,
-  #0B00CF,
-  #300A6E,
-  #FF2D2B,
-  #C10A28
-  );
-  width:100%;
-  height:1900px;
-}
-button{
- border-radius:30px;
- border:none;
-}
-.box{
-  width:300px;
-  border:2px snow solid;
-  border-radius:50px;
-}
-.input{
-  background-color: transparent;
-  border:none;
-  border-bottom:2px solid #fff;
-  width:50%;
-  transition: 1s;
-}
-.input:focus{
-  outline:none;
-  width:100%;
-  background-color: transparent;
-  border:none;
-  border-bottom:2px solid #fff;
-  transition: 1s;
-}
+body{
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: 0 auto;
+      margin-top: 100px;
+      background-color: #FFFFFF8C;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 40px;
+    }
+
+    input {
+      outline: none;
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #000000;
+      background-color: transparent;
+    }
+
+    .input {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: #000000;
+      font-size: 1em;
+      transition: .5s;
+    }
+
+    input:focus + label,
+    input:valid + label {
+      top: -20px;
+      font-size: 0.8em;
+      color: #007bff;
+    }
+    .circlegy{
+      z-index:-1;
+      position:relative;
+      top:-50px;
+  
+      left:60%;
+      border-radius:50%;
+      width:150px;
+      height:150px;
+      background-color:greenyellow;
+    }
+      .circleyo {
+          z-index: -1;
+          position: relative;
+          top:200px;
+    
+          left: 10%;
+          border-radius: 50%;
+          width: 150px;
+          height: 150px;
+          background-color:#FFAA33;
+        }
