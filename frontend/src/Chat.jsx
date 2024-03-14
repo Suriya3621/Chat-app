@@ -39,7 +39,7 @@ const Chat = () => {
       socket.disconnect();
       socket.off();
     };
-  }, [socketUrl, window.location.search]);
+  }, [socketUrl]);
 
   useEffect(() => {
     socket.on('message', msg => {
@@ -69,6 +69,7 @@ const Chat = () => {
   };
 
   return (
+    <div>
      <div>
       <div>
         <nav className="navbar navbar-expand-lg navbar-light bg-light text-dark">
@@ -90,10 +91,10 @@ const Chat = () => {
       </div>
       <div className="row">
         <div className="col-md chat-window" id="chat_window_1 ">
-
+  
           <div className="">
             <div className="panel-body msg_container_base chatwin" id="chat_body">
-              {loading ? (
+            {loading ? (
                 // Render spinner while loading
                 
     <div className="d-flex justify-content-center text-light spin">
@@ -103,16 +104,16 @@ const Chat = () => {
               ) : (
                 messages.map((e, i) => (
                   e.user === user?.toLowerCase() ? <>
-                    <div key={i} className="row msg_container base_receive rounded">
+                    <div key={i} className="row msg_container base_receive msgwidth rounded">
                       <div className="col-md">
-                        <div className="messages msg_receive rounded-top rounded-left bg-primary text-light">
+                        <div className="messages msg_receive rounded-top rounded-left bg-primary text-white">
                           <p>{e.text}</p>
                           <time>{e.user}</time>
                         </div>
                       </div>
                     </div>
                   </> : <>
-                    <div key={i} className="row msg_container base_sent">
+                    <div key={i} className="row msg_container base_sent msgwidth">
                       <div className="col-md">
                         <div className="messages msg_sent rounded bg-light text-dark">
                           <p>{e.text}</p>
@@ -127,7 +128,8 @@ const Chat = () => {
 <br/>
 <br/>
             </div>
-            
+
+            <center>
               <div className="input-box">
                 <input
                   id="btn-input"
@@ -142,7 +144,7 @@ const Chat = () => {
                 />
                 <div className="input-group-append">
                   <button
-                    className="text-success"
+                    className="text-success "
                     id="btn-msg"
                     onClick={(e) => { sendMessage(e); inRef.current.focus() }}
                   >
@@ -150,6 +152,7 @@ const Chat = () => {
                   </button>
                 </div>
               </div>
+              </center>
             </div>
           </div>
         </div>
@@ -168,7 +171,7 @@ const Chat = () => {
         </center>
        ):null}
       </div>
-    
+    </div>
   );
 };
 
