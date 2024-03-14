@@ -9,7 +9,7 @@ function Admin(){
   <p>Admin name:Suriyaprakash</p>
   <hr/>
   <p>Email:suriyaprakashraja849@gmail.com</p>
-  </div><br/>
+  </div><br/><br/><br/>
     <Link to='/'><button class="btn btn-danger">Click here to login page</button></Link>
   </center>
     )
