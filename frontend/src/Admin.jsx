@@ -4,7 +4,7 @@ import './Admin.css'
 function Admin(){
   return(
       <center class="con"> 
-  <p class="person text-light bg-dark "><i class="bi bi-person"></i></p>
+
   <div class="detail">
   <p>Admin name:Suriyaprakash</p>
   <hr/>
