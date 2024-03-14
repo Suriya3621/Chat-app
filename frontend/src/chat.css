@@ -1,4 +1,5 @@
  .ac{
+   max-height:600px;
   width:50% ;
   position:relative;
   bottom:400px;
@@ -162,4 +163,18 @@ img {
 .line {
   width:100%;
   height:5px;
+}
+@media screen and (min-width:600px) {
+ .input-box {
+    width:50%;
+  }
+  .msgwidth{
+    width:70%;
+  }
+  .ac{
+    max-height:600px;
+    width:30%;
+    right:-300px;
+    top:-680px;
+  }
 }
