@@ -27,7 +27,7 @@ const Login = () => {
         <div class="d-grid">
           <Link onClick={(name === '' || room === '') ? (e) => e.preventDefault() : null}
       to={`/chat?name=${name}&room=${room}`}>
-          <button class="btn btn-primary btn-block">Join</button>
+          <button class="btn btn-primary btn-block form-control">Join</button>
           </Link>
         </div>
           
