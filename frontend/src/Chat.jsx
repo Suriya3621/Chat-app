@@ -3,10 +3,11 @@ import io from 'socket.io-client';
 import './chat.css';
 import { Link } from 'react-router-dom';
 
-let socket;
-
 const Chat = () => {
   const inRef = useRef();
+  const chatEndRef = useRef();
+  const socketRef = useRef();
+
   const [list, setList] = useState(false);
   const [user, setUser] = useState("");
   const [room, setRoom] = useState("");
@@ -19,119 +20,117 @@ const Chat = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const user = params.get('name');
-    const room = params.get('room');
+    const u = params.get('name');
+    const r = params.get('room');
 
-    setUser(user);
-    setRoom(room);
+    const currentUser = u?.trim();
+    setUser(currentUser);
+    setRoom(r);
 
-    socket = io(socketUrl);
-
-    socket.emit('join', { user, room });
+    socketRef.current = io(socketUrl);
+    socketRef.current.emit('join', { user: currentUser, room: r });
 
     return () => {
-      socket.disconnect();
-      socket.off();
+      socketRef.current.disconnect();
+      socketRef.current.off();
     };
-  }, [socketUrl]);
+  }, []);
 
   useEffect(() => {
-    socket.on('message', msg => {
-      setMessages(prev => [...prev, msg]);
+    socketRef.current.on('message', (msg) => {
+      setMessages((prev) => [...prev, msg]);
       setLoading(false);
-
-      setTimeout(() => {
-        const div = document.getElementById("chat_body");
-        div.scrollTop = div.scrollHeight;
-      }, 10);
     });
 
-    socket.on('roomMembers', usrs => {
+    socketRef.current.on('roomMembers', (usrs) => {
       setUsers(usrs);
     });
   }, []);
 
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      socket.emit('sendMessage', message, () => setMessage(""));
+      socketRef.current.emit('sendMessage', message, () => setMessage(""));
       setLoading(true);
-      setTimeout(() => {
-        const div = document.getElementById("chat_body");
-        div.scrollTop = div.scrollHeight;
-      }, 100);
     }
   };
 
+  const currentUser = user?.toLowerCase();
+
   return (
-    <div className="container-fluid bg-light vh-100 d-flex flex-column">
+    <div className="vh-100 d-flex flex-column bg-white">
       {/* Header */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3 py-2">
-        <span className="navbar-brand mb-0 h1">{room}</span>
-        <div className="ms-auto d-flex align-items-center gap-3">
-          <div className="form-check form-switch text-white">
-            <label className="form-check-label" htmlFor="userToggle">Users</label>
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="userToggle"
-              checked={list}
-              onChange={() => setList(!list)}
-            />
+      <nav className="navbar navbar-dark bg-dark px-4 py-3 sticky-top shadow">
+        <div className="d-flex w-100 justify-content-between align-items-center">
+          <span className="navbar-brand mb-0 h4 text-uppercase">{room}</span>
+          <div className="d-flex gap-3 align-items-center">
+            <div className="form-check form-switch text-white">
+              <label className="form-check-label me-2" htmlFor="userToggle">Users</label>
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="userToggle"
+                checked={list}
+                onChange={() => setList(!list)}
+              />
+            </div>
+            <Link to="/detail" className="btn btn-sm btn-outline-info">Admin</Link>
           </div>
-          <Link to="/detail" className="btn btn-outline-info btn-sm">
-            Admin Details
-          </Link>
         </div>
       </nav>
 
-      {/* Chat Window */}
-      <div className="row flex-grow-1 overflow-hidden">
-        <div className="col-12 col-md-9 d-flex flex-column px-0">
+      {/* Main */}
+      <div className="flex-grow-1 d-flex overflow-hidden">
+        <div className="flex-grow-1 d-flex flex-column">
           <div
             id="chat_body"
-            className="flex-grow-1 overflow-auto p-3 bg-white border-end"
-            style={{ scrollBehavior: 'smooth' }}
+            className="flex-grow-1 p-4 overflow-auto"
+            style={{ background: "#f8f9fa" }}
           >
             {loading ? (
-              <div className="d-flex justify-content-center align-items-center text-secondary">
-                <div className="spinner-border me-2" role="status"></div>
-                <span>Loading...</span>
+              <div className="text-center text-secondary">
+                <div className="spinner-border" role="status"></div>
+                <p className="mt-2">Loading chat...</p>
               </div>
             ) : (
               messages.map((e, i) => (
-                <div key={i} className={`d-flex mb-3 ${e.user === user?.toLowerCase() ? 'justify-content-end' : 'justify-content-start'}`}>
-                  <div className={`p-2 rounded shadow-sm ${e.user === user?.toLowerCase() ? 'bg-primary text-white' : 'bg-light text-dark'}`} style={{ maxWidth: '70%' }}>
+                <div key={i} className={`d-flex mb-3 ${e.user === currentUser ? 'justify-content-end' : 'justify-content-start'}`}>
+                  <div className={`p-3 rounded-3 shadow-sm ${e.user === currentUser ? 'bg-primary text-white' : 'bg-light text-dark'}`} style={{ maxWidth: '75%' }}>
                     <p className="mb-1">{e.text}</p>
                     <small className="text-muted">{e.user}</small>
                   </div>
                 </div>
               ))
             )}
+            <div ref={chatEndRef} />
           </div>
 
-          {/* Input Box */}
-          <form onSubmit={sendMessage} className="bg-dark p-3 d-flex align-items-center">
+          {/* Input */}
+          <form onSubmit={sendMessage} className="p-3 border-top bg-light d-flex">
             <input
-              type="text"
               ref={inRef}
-              className="form-control me-2 text-light bg-dark border-secondary"
+              type="text"
+              className="form-control me-2"
               placeholder="Type a message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage(e)}
+              onKeyDown={(e) => e.key === 'Enter' && sendMessage(e)}
             />
-            <button className="btn btn-success" type="submit">
+            <button type="submit" className="btn btn-success">
               <i className="bi bi-send"></i>
             </button>
           </form>
         </div>
 
-        {/* Active Users Sidebar */}
+        {/* User Sidebar */}
         {list && (
-          <div className="col-12 col-md-3 bg-light border-start p-3">
-            <h5 className="mb-3">Active Users</h5>
-            <ul className="list-group">
+          <div className="d-none d-md-block border-start p-3 bg-white" style={{ width: '250px' }}>
+            <h6 className="mb-3 text-secondary">Active Users</h6>
+            <ul className="list-group list-group-flush">
               {users.map((e, i) => (
                 <li key={i} className="list-group-item">{e.user}</li>
               ))}
