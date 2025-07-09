@@ -12,15 +12,13 @@ const Chat = () => {
   const [room, setRoom] = useState("");
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState("");
-  
   const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   const socketUrl = 'https://chat-backend-xq4g.onrender.com';
 
   useEffect(() => {
-    const search = window.location.search;
-    const params = new URLSearchParams(search);
+    const params = new URLSearchParams(window.location.search);
     const user = params.get('name');
     const room = params.get('room');
 
@@ -29,11 +27,7 @@ const Chat = () => {
 
     socket = io(socketUrl);
 
-    socket.emit('join', { user, room }, (err) => {
-      if (err) {
-        // alert(err)
-      }
-    });
+    socket.emit('join', { user, room });
 
     return () => {
       socket.disconnect();
@@ -43,11 +37,12 @@ const Chat = () => {
 
   useEffect(() => {
     socket.on('message', msg => {
-      setMessages(prevMsg => [...prevMsg, msg]);
-      setLoading(false); // Set loading to false when messages are received
+      setMessages(prev => [...prev, msg]);
+      setLoading(false);
+
       setTimeout(() => {
-        var div = document.getElementById("chat_body");
-        div.scrollTop = div.scrollHeight - div.clientWidth;
+        const div = document.getElementById("chat_body");
+        div.scrollTop = div.scrollHeight;
       }, 10);
     });
 
@@ -58,118 +53,91 @@ const Chat = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    if (message.trim() !== "") { // Check if the message is not empty or only contains whitespace
+    if (message.trim()) {
       socket.emit('sendMessage', message, () => setMessage(""));
-      setLoading(true); // Set loading to true when sending message
+      setLoading(true);
       setTimeout(() => {
-        var div = document.getElementById("chat_body");
+        const div = document.getElementById("chat_body");
         div.scrollTop = div.scrollHeight;
       }, 100);
     }
   };
 
   return (
-    <div>
-     <div>
-      <div>
-        <nav className="navbar navbar-expand-lg navbar-light bg-light text-dark">
-          <h1>{room}</h1><t/><t/>
-   <div class="form-check form-switch">    
-          View active users<input 
-       class="form-check-input"
-        role="switch" id="flexSwitchCheckChecked"
-  type="checkbox" 
-  checked={list} 
-  onChange={() => setList(prevList => !prevList)} // Toggle the value of 'list'
-/>  </div>
-            <Link to="/detail">
-            <button className="btn btn-info">Admin details</button>
-          </Link>
-        </nav>
-      </div>
-      <div className="bg-secondary line" >
-      </div>
-      <div className="row">
-        <div className="col-md chat-window" id="chat_window_1 ">
-  
-          <div className="">
-            <div className="panel-body msg_container_base chatwin" id="chat_body">
-            {loading ? (
-                // Render spinner while loading
-                
-    <div className="d-flex justify-content-center text-light spin">
-      <div className="spinner-border" role="status"></div>
-      <span className="sr-only">Loading...</span>
-    </div>
-              ) : (
-                messages.map((e, i) => (
-                  e.user === user?.toLowerCase() ? <>
-                    <div key={i} className="row msg_container base_receive msgwidth rounded">
-                      <div className="col-md">
-                        <div className="messages msg_receive rounded-top rounded-left bg-primary text-white">
-                          <p>{e.text}</p>
-                          <time>{e.user}</time>
-                        </div>
-                      </div>
-                    </div>
-                  </> : <>
-                    <div key={i} className="row msg_container base_sent msgwidth">
-                      <div className="col-md">
-                        <div className="messages msg_sent rounded bg-light text-dark">
-                          <p>{e.text}</p>
-                          <time>{e.user}</time>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ))
-              )}
-<br/>
-<br/>
-<br/>
-            </div>
-
-            <center>
-              <div className="input-box">
-                <input
-                  id="btn-input"
-                  type="text"
-                  value={message}
-                  onKeyPress={e => e.key === 'Enter' ? sendMessage(e) : null}
-                  onChange={(e) => setMessage(e.target.value)}
-                  ref={inRef}
-                  className="chat_input text-light "
-                  placeholder="Message here..."
-                
-                />
-                <div className="input-group-append">
-                  <button
-                    className="text-success "
-                    id="btn-msg"
-                    onClick={(e) => { sendMessage(e); inRef.current.focus() }}
-                  >
-                    <i class="bi bi-send"></i>
-                  </button>
-                </div>
-              </div>
-              </center>
-            </div>
+    <div className="container-fluid bg-light vh-100 d-flex flex-column">
+      {/* Header */}
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3 py-2">
+        <span className="navbar-brand mb-0 h1">{room}</span>
+        <div className="ms-auto d-flex align-items-center gap-3">
+          <div className="form-check form-switch text-white">
+            <label className="form-check-label" htmlFor="userToggle">Users</label>
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="userToggle"
+              checked={list}
+              onChange={() => setList(!list)}
+            />
           </div>
+          <Link to="/detail" className="btn btn-outline-info btn-sm">
+            Admin Details
+          </Link>
         </div>
-       {list ?(<center>
-        <div className="alert alert-light text-dark alert-dismissable  ac" 
-        role="alert"
-        >
-        
-          <h4>Active Users</h4>
-          <ul className="Activeuser">
-            {users.map((e, i) => (
-              <li key={i}>{e.user}</li>
-            ))}
-          </ul>
+      </nav>
+
+      {/* Chat Window */}
+      <div className="row flex-grow-1 overflow-hidden">
+        <div className="col-12 col-md-9 d-flex flex-column px-0">
+          <div
+            id="chat_body"
+            className="flex-grow-1 overflow-auto p-3 bg-white border-end"
+            style={{ scrollBehavior: 'smooth' }}
+          >
+            {loading ? (
+              <div className="d-flex justify-content-center align-items-center text-secondary">
+                <div className="spinner-border me-2" role="status"></div>
+                <span>Loading...</span>
+              </div>
+            ) : (
+              messages.map((e, i) => (
+                <div key={i} className={`d-flex mb-3 ${e.user === user?.toLowerCase() ? 'justify-content-end' : 'justify-content-start'}`}>
+                  <div className={`p-2 rounded shadow-sm ${e.user === user?.toLowerCase() ? 'bg-primary text-white' : 'bg-light text-dark'}`} style={{ maxWidth: '70%' }}>
+                    <p className="mb-1">{e.text}</p>
+                    <small className="text-muted">{e.user}</small>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Input Box */}
+          <form onSubmit={sendMessage} className="bg-dark p-3 d-flex align-items-center">
+            <input
+              type="text"
+              ref={inRef}
+              className="form-control me-2 text-light bg-dark border-secondary"
+              placeholder="Type a message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && sendMessage(e)}
+            />
+            <button className="btn btn-success" type="submit">
+              <i className="bi bi-send"></i>
+            </button>
+          </form>
         </div>
-        </center>
-       ):null}
+
+        {/* Active Users Sidebar */}
+        {list && (
+          <div className="col-12 col-md-3 bg-light border-start p-3">
+            <h5 className="mb-3">Active Users</h5>
+            <ul className="list-group">
+              {users.map((e, i) => (
+                <li key={i} className="list-group-item">{e.user}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
