@@ -9,10 +9,10 @@ const Chat = () => {
   const socketRef = useRef();
 
   const [list, setList] = useState(false);
-  const [user, setUser] = useState("");
-  const [room, setRoom] = useState("");
+  const [user, setUser] = useState('');
+  const [room, setRoom] = useState('');
   const [users, setUsers] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,15 +20,14 @@ const Chat = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const u = params.get('name');
-    const r = params.get('room');
+    const name = params.get('name');
+    const roomName = params.get('room');
 
-    const currentUser = u?.trim();
-    setUser(currentUser);
-    setRoom(r);
+    setUser(name);
+    setRoom(roomName);
 
     socketRef.current = io(socketUrl);
-    socketRef.current.emit('join', { user: currentUser, room: r });
+    socketRef.current.emit('join', { user: name, room: roomName });
 
     return () => {
       socketRef.current.disconnect();
@@ -54,7 +53,7 @@ const Chat = () => {
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      socketRef.current.emit('sendMessage', message, () => setMessage(""));
+      socketRef.current.emit('sendMessage', message, () => setMessage(''));
       setLoading(true);
     }
   };
@@ -64,42 +63,79 @@ const Chat = () => {
   return (
     <div className="vh-100 d-flex flex-column bg-white">
       {/* Header */}
-      <nav className="navbar navbar-dark bg-dark px-4 py-3 sticky-top shadow">
-        <div className="d-flex w-100 justify-content-between align-items-center">
-          <span className="navbar-brand mb-0 h4 text-uppercase">{room}</span>
-          <div className="d-flex gap-3 align-items-center">
-            <div className="form-check form-switch text-white">
-              <label className="form-check-label me-2" htmlFor="userToggle">Users</label>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id="userToggle"
-                checked={list}
-                onChange={() => setList(!list)}
-              />
-            </div>
-            <Link to="/detail" className="btn btn-sm btn-outline-info">Admin</Link>
+      <nav className="navbar navbar-dark bg-dark px-3 py-2">
+        <div className="d-flex justify-content-between align-items-center w-100">
+          <span className="navbar-brand h4 m-0">{room}</span>
+          <div className="d-flex align-items-center gap-3">
+            <button
+              className="btn btn-outline-light btn-sm d-md-none"
+              onClick={() => setList(!list)}
+            >
+              {list ? 'Hide' : 'Users'}
+            </button>
+            <Link to="/detail" className="btn btn-outline-info btn-sm d-none d-md-block">
+              Admin Details
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* Main */}
-      <div className="flex-grow-1 d-flex overflow-hidden">
+      {/* Body */}
+      <div className="flex-grow-1 d-flex overflow-hidden position-relative">
+        {/* Users Sidebar (desktop) */}
+        <div className={`bg-light border-end p-3 d-none d-md-block`} style={{ width: '250px' }}>
+          <h6 className="text-secondary mb-3">Online Users</h6>
+          <ul className="list-group list-group-flush">
+            {users.map((u, i) => (
+              <li key={i} className="list-group-item">{u.user}</li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Users Popup (mobile) */}
+        {list && (
+          <div
+            className="position-absolute top-0 start-0 bg-white border-end p-3 shadow"
+            style={{
+              width: '70%',
+              height: '100%',
+              zIndex: 999,
+            }}
+          >
+            <div className="d-flex justify-content-between mb-2">
+              <h6 className="text-secondary">Online Users</h6>
+              <button className="btn btn-sm btn-outline-secondary" onClick={() => setList(false)}>✕</button>
+            </div>
+            <ul className="list-group list-group-flush">
+              {users.map((u, i) => (
+                <li key={i} className="list-group-item">{u.user}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Chat View */}
         <div className="flex-grow-1 d-flex flex-column">
           <div
             id="chat_body"
-            className="flex-grow-1 p-4 overflow-auto"
-            style={{ background: "#f8f9fa" }}
+            className="flex-grow-1 p-3 overflow-auto"
+            style={{ background: '#f0f2f5' }}
           >
             {loading ? (
-              <div className="text-center text-secondary">
+              <div className="text-center text-secondary mt-5">
                 <div className="spinner-border" role="status"></div>
                 <p className="mt-2">Loading chat...</p>
               </div>
             ) : (
               messages.map((e, i) => (
-                <div key={i} className={`d-flex mb-3 ${e.user === currentUser ? 'justify-content-end' : 'justify-content-start'}`}>
-                  <div className={`p-3 rounded-3 shadow-sm ${e.user === currentUser ? 'bg-primary text-white' : 'bg-light text-dark'}`} style={{ maxWidth: '75%' }}>
+                <div
+                  key={i}
+                  className={`d-flex mb-3 ${e.user === currentUser ? 'justify-content-end' : 'justify-content-start'}`}
+                >
+                  <div
+                    className={`p-3 rounded-3 shadow-sm ${e.user === currentUser ? 'bg-primary text-white' : 'bg-white text-dark'}`}
+                    style={{ maxWidth: '75%' }}
+                  >
                     <p className="mb-1">{e.text}</p>
                     <small className="text-muted">{e.user}</small>
                   </div>
@@ -110,33 +146,24 @@ const Chat = () => {
           </div>
 
           {/* Input */}
-          <form onSubmit={sendMessage} className="p-3 border-top bg-light d-flex">
+          <form
+            onSubmit={sendMessage}
+            className="p-2 border-top bg-white d-flex align-items-center"
+          >
             <input
               ref={inRef}
               type="text"
               className="form-control me-2"
-              placeholder="Type a message..."
+              placeholder="Type your message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendMessage(e)}
             />
-            <button type="submit" className="btn btn-success">
-              <i className="bi bi-send"></i>
+            <button className="btn btn-success" type="submit">
+              <i className="bi bi-send" />
             </button>
           </form>
         </div>
-
-        {/* User Sidebar */}
-        {list && (
-          <div className="d-none d-md-block border-start p-3 bg-white" style={{ width: '250px' }}>
-            <h6 className="mb-3 text-secondary">Active Users</h6>
-            <ul className="list-group list-group-flush">
-              {users.map((e, i) => (
-                <li key={i} className="list-group-item">{e.user}</li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   );
