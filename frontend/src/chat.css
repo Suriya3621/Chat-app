@@ -1,3 +1,18 @@
+#chat_body {
+  height: calc(100vh - 150px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.chat_input {
+  background-color: #1f1f1f;
+  border: none;
+}
+
+.chat_input:focus {
+  outline: none;
+  box-shadow: none;
+}
  .ac{
    max-height:400px;
   width:50% ;
