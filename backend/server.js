@@ -3,51 +3,72 @@ const socketio = require("socket.io");
 const http = require("http");
 const { addUser, removeUser, getUser, getRoomUsers } = require("./entity");
 
-// Instances
-const app = express()
+const app = express();
 const server = http.createServer(app);
-const io = socketio(server,{cors: { origin: '*' }})
+const io = socketio(server, { cors: { origin: "*" } });
 
-// End point
-app.get('/',(req,res) => {
-  res.json("Api is working");
-})
+app.get("/", (req, res) => {
+  res.json("API is working");
+});
 
-// Socket
+io.on("connect", (socket) => {
+  // When user joins
+  socket.on("join", ({ user, room }, callback) => {
+    console.log(`JOIN REQUEST => ${user} | ${room}`);
 
-io.on('connect',(socket) => {
-  socket.on('join',({user,room},callback) => {
-    console.log(user,room)
-      const {response , error} = addUser({id: socket.id , user:user, room: room})
+    const { response, error } = addUser({ id: socket.id, user, room });
 
-      console.log(response)
+    if (error) {
+      console.log("Join error:", error);
+      callback(error);
+      return;
+    }
 
-      if(error) {
-        callback(error)
-        return;
-      }
-      socket.join(response.room);
-      socket.emit('message', { user: 'admin' , text: `Welcome ${response.user} ` });
-      socket.broadcast.to(response.room).emit('message', { user: 'admin', text : `${response.user} has joined` })
+    socket.join(response.room);
 
-      io.to(response.room).emit('roomMembers', getRoomUsers(response.room))
-  })
+    socket.emit("message", {
+      user: "admin",
+      text: `Welcome ${response.user}!`,
+    });
 
-  socket.on('sendMessage',(message,callback) => {
-    
-      const user = getUser(socket.id)
+    socket.broadcast.to(response.room).emit("message", {
+      user: "admin",
+      text: `${response.user} has joined the chat.`,
+    });
 
-      io.to(user.room).emit('message',{ user: user.user, text : message })
+    io.to(response.room).emit("roomMembers", getRoomUsers(response.room));
 
-      callback()
-  })
-  socket.on('disconnect',() => {
-    console.log("User disconnected");
+    callback(); // success
+  });
+
+  // When user sends a message
+  socket.on("sendMessage", (message, callback) => {
+    const user = getUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit("message", {
+        user: user.user,
+        text: message,
+      });
+    }
+
+    callback();
+  });
+
+  // When user disconnects
+  socket.on("disconnect", () => {
     const user = removeUser(socket.id);
 
-    if(user) {
-      io.to(user.room).emit('message',{ user: 'admin', text : `${user.user} has left` })
+    if (user) {
+      io.to(user.room).emit("message", {
+        user: "admin",
+        text: `${user.user} has left the chat.`,
+      });
+      io.to(user.room).emit("roomMembers", getRoomUsers(user.room));
     }
-  })
-})
-server.listen(8000,() => console.log('Server started on 8000'))
+
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+server.listen(8000, () => console.log("Server started on port 8000"));
