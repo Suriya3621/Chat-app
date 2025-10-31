@@ -19,21 +19,21 @@ const Chat = () => {
   const socketUrl = process.env.REACT_APP_URI;
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get('name');
-    const roomName = params.get('room');
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get('name');
+  const roomName = params.get('room');
 
-    setUser(name);
-    setRoom(roomName);
+  setUser(name);
+  setRoom(roomName);
 
-    socketRef.current = io(socketUrl);
-    socketRef.current.emit('join', { user: name, room: roomName });
+  socketRef.current = io(socketUrl);
+  socketRef.current.emit('join', { user: name, room: roomName });
 
-    return () => {
-      socketRef.current.disconnect();
-      socketRef.current.off();
-    };
-  }, []);
+  return () => {
+    socketRef.current.disconnect();
+    socketRef.current.off();
+  };
+}, [socketUrl]);
 
   useEffect(() => {
     socketRef.current.on('message', (msg) => {
