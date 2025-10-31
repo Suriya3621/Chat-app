@@ -23,25 +23,13 @@
   background: #a1a1a1;
 }
 
-/* Smooth transitions */
-* {
-  transition-property: color, background-color, border-color, transform, box-shadow;
-  transition-duration: 150ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Message animation */
-@keyframes messageSlide {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+/* Loading animation */
+@keyframes spin {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: rotate(360deg);
   }
 }
 
-.message-slide {
-  animation: messageSlide 0.3s ease-out;
+.animate-spin {
+  animation: spin 1s linear infinite;
 }
