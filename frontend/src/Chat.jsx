@@ -379,13 +379,15 @@ return (
                   </div>  
 
                   {/* Message Bubble */}  
-                  <div className={`rounded-2xl px-4 py-3 shadow-lg ${  
-                    msg.user === user   
-                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-md'   
-                      : 'bg-gray-800 text-gray-100 rounded-bl-md border border-gray-700'  
-                  }`}>  
-                    <p className="leading-relaxed whitespace-pre-wrap break-words">{msg.text}</p>  
-                  </div>  
+                  <div
+  className={`max-w-[75%] px-4 py-2 rounded-2xl text-[15px] shadow-sm ${
+    msg.user === user
+      ? "bg-blue-500 text-white rounded-br-md self-end"
+      : "bg-gray-200 text-gray-900 rounded-bl-md"
+  }`}
+>
+  <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+</div>
                 </div>  
               </div>  
             </div>  
