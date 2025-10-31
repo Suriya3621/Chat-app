@@ -66,11 +66,6 @@ const Chat = () => {
     });
   };
 
-  // Remove the unused scrollToBottom function and use this instead
-  const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   // Sample users for demo
   const demoUsers = [
     { user: 'John' },
