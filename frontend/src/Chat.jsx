@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import './chat.css';
 import { Link } from 'react-router-dom';
 
 const Chat = () => {
@@ -53,7 +52,6 @@ const Chat = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Handle scroll for sticky header effect
   useEffect(() => {
     const handleScroll = () => {
       if (messagesContainerRef.current) {
@@ -92,32 +90,37 @@ const Chat = () => {
   };
 
   return (
-    <div className="chat-container">
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-500 font-sans">
       {/* Sticky Header */}
-      <header className={`chat-header ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="header-content">
-          <div className="room-info">
-            <div className="room-avatar">
-              <span>#</span>
+      <header className={`bg-white/95 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'shadow-lg' : 'shadow'
+      }`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow">
+              #
             </div>
-            <div className="room-details">
-              <h2 className="room-name">{room}</h2>
-              <span className="online-count">{users.length} online</span>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">{room}</h2>
+              <span className="text-green-500 text-sm font-semibold flex items-center">
+                <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                {users.length} online
+              </span>
             </div>
           </div>
 
-          <div className="header-actions">
+          <div className="flex items-center space-x-3">
             <button
-              className="header-btn users-toggle"
+              className="w-11 h-11 bg-indigo-50 hover:bg-indigo-500 text-indigo-500 hover:text-white rounded-lg flex items-center justify-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
               onClick={() => setList(!list)}
               title="Online Users"
             >
               <i className="bi bi-people-fill"></i>
-              <span className="mobile-only">{users.length}</span>
+              <span className="sm:hidden ml-1">{users.length}</span>
             </button>
-            
+
             <button
-              className="header-btn info-toggle"
+              className="w-11 h-11 bg-indigo-50 hover:bg-indigo-500 text-indigo-500 hover:text-white rounded-lg flex items-center justify-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
               onClick={() => setShowAdminInfo(!showAdminInfo)}
               title="Room Info"
             >
@@ -125,7 +128,7 @@ const Chat = () => {
             </button>
 
             <button 
-              className="header-btn scroll-bottom"
+              className="w-11 h-11 bg-indigo-50 hover:bg-indigo-500 text-indigo-500 hover:text-white rounded-lg flex items-center justify-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
               onClick={scrollToBottom}
               title="Scroll to bottom"
             >
@@ -137,33 +140,36 @@ const Chat = () => {
 
       {/* Admin Info Panel */}
       {showAdminInfo && (
-        <div className="admin-info-panel">
-          <div className="admin-info-content">
-            <div className="admin-header">
-              <h3>Room Information</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-xl animate-slide-up">
+            <div className="flex justify-between items-center pb-4 border-b border-gray-200 mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Room Information</h3>
               <button 
-                className="close-btn"
+                className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors"
                 onClick={() => setShowAdminInfo(false)}
               >
-                <i className="bi bi-x-lg"></i>
+                <i className="bi bi-x-lg text-lg"></i>
               </button>
             </div>
-            <div className="admin-details">
-              <div className="info-item">
-                <i className="bi bi-person"></i>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <i className="bi bi-person text-indigo-500"></i>
                 <span>Your Name: <strong>{user}</strong></span>
               </div>
-              <div className="info-item">
-                <i className="bi bi-hash"></i>
+              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <i className="bi bi-hash text-indigo-500"></i>
                 <span>Room: <strong>{room}</strong></span>
               </div>
-              <div className="info-item">
-                <i className="bi bi-people"></i>
+              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                <i className="bi bi-people text-indigo-500"></i>
                 <span>Online Users: <strong>{users.length}</strong></span>
               </div>
-              <Link to="/detail" className="admin-detail-link">
+              <Link 
+                to="/detail" 
+                className="flex items-center space-x-3 p-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg font-medium transition-all hover:shadow-lg hover:-translate-y-0.5"
+              >
                 <i className="bi bi-gear"></i>
-                Admin Settings
+                <span>Admin Settings</span>
               </Link>
             </div>
           </div>
@@ -171,88 +177,113 @@ const Chat = () => {
       )}
 
       {/* Main Content */}
-      <div className="chat-main">
+      <div className="max-w-7xl mx-auto p-4 lg:p-6 flex flex-col lg:flex-row gap-4 lg:gap-6 pb-24 lg:pb-6">
         {/* Users Sidebar */}
-        <aside className={`users-sidebar ${list ? 'mobile-visible' : ''}`}>
-          <div className="sidebar-header">
-            <div className="sidebar-title">
-              <i className="bi bi-people-fill"></i>
-              <h3>Online Users ({users.length})</h3>
+        <aside className={`bg-white/95 backdrop-blur-lg rounded-2xl border border-gray-200 shadow-lg flex flex-col lg:w-80 ${
+          list ? 'fixed inset-4 lg:static lg:inset-auto z-40' : 'hidden lg:flex'
+        }`}>
+          <div className="p-4 lg:p-6 border-b border-gray-200 flex justify-between items-center">
+            <div className="flex items-center space-x-3 text-gray-900">
+              <i className="bi bi-people-fill text-indigo-500 text-lg"></i>
+              <h3 className="font-semibold">Online Users ({users.length})</h3>
             </div>
-            <button className="close-sidebar" onClick={() => setList(false)}>
-              <i className="bi bi-x-lg"></i>
+            <button 
+              className="lg:hidden text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100"
+              onClick={() => setList(false)}
+            >
+              <i className="bi bi-x-lg text-lg"></i>
             </button>
           </div>
-          <div className="users-list">
+          
+          <div className="flex-1 overflow-y-auto p-4">
             {users.map((u, i) => (
-              <div key={i} className={`user-item ${u.user === user ? 'current-user' : ''}`}>
-                <div className="user-avatar">
+              <div 
+                key={i} 
+                className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 mb-2 ${
+                  u.user === user 
+                    ? 'bg-gradient-to-r from-indigo-50 to-purple-50 border-l-4 border-indigo-500' 
+                    : 'hover:bg-gray-50 hover:translate-x-1'
+                }`}
+              >
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow">
                   {u.user.charAt(0).toUpperCase()}
                 </div>
-                <span className="username">
+                <span className="flex-1 text-gray-900 font-medium">
                   {u.user} {u.user === user && '(You)'}
                 </span>
-                <div className="online-indicator"></div>
+                <div className="w-3 h-3 bg-green-500 rounded-full shadow-sm shadow-green-200"></div>
               </div>
             ))}
           </div>
-          <div className="sidebar-footer">
+          
+          <div className="p-4 border-t border-gray-200">
             <button 
-              className="sidebar-action-btn"
+              className="w-full p-3 bg-indigo-50 hover:bg-indigo-500 text-indigo-500 hover:text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2 hover:shadow-lg hover:-translate-y-0.5"
               onClick={() => setShowAdminInfo(true)}
             >
               <i className="bi bi-info-circle"></i>
-              Room Info
+              <span>Room Info</span>
             </button>
           </div>
         </aside>
 
         {/* Chat Area */}
-        <section className="chat-area">
+        <section className="flex-1 bg-white/95 backdrop-blur-lg rounded-2xl border border-gray-200 shadow-lg flex flex-col min-h-[500px]">
           <div 
-            className="messages-container" 
-            id="chat_body"
             ref={messagesContainerRef}
+            className="flex-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-gray-100 p-4 lg:p-6"
           >
             {loading && messages.length === 0 ? (
-              <div className="loading-state">
-                <div className="loading-spinner"></div>
+              <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                <div className="w-12 h-12 border-4 border-gray-200 border-t-indigo-500 rounded-full animate-spin mb-4"></div>
                 <p>Loading messages...</p>
               </div>
             ) : messages.length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon">
+              <div className="flex flex-col items-center justify-center h-full text-center p-8">
+                <div className="text-6xl text-gray-300 mb-4">
                   <i className="bi bi-chat-dots"></i>
                 </div>
-                <h3>Welcome to {room}!</h3>
-                <p>Start the conversation by sending the first message</p>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Welcome to {room}!</h3>
+                <p className="text-gray-500 mb-6">Start the conversation by sending the first message</p>
                 <button 
-                  className="start-chat-btn"
+                  className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium transition-all hover:shadow-lg hover:-translate-y-0.5 flex items-center space-x-2"
                   onClick={() => inRef.current?.focus()}
                 >
                   <i className="bi bi-chat"></i>
-                  Start Chatting
+                  <span>Start Chatting</span>
                 </button>
               </div>
             ) : (
               <>
-                <div className="welcome-banner">
+                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium text-center mb-4 flex items-center justify-center space-x-2 animate-pulse">
                   <i className="bi bi-arrow-down"></i>
                   <span>Scroll down for new messages</span>
                 </div>
                 {messages.map((e, i) => (
                   <div
                     key={i}
-                    className={`message-wrapper ${e.user === currentUser ? 'own-message' : 'other-message'}`}
+                    className={`flex mb-5 animate-slide-up ${
+                      e.user === currentUser ? 'justify-end' : 'justify-start'
+                    }`}
                   >
-                    <div className="message-bubble">
+                    <div className={`max-w-[70%] lg:max-w-[60%] p-4 rounded-2xl shadow ${
+                      e.user === currentUser 
+                        ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-br-md' 
+                        : 'bg-white border border-gray-200 rounded-bl-md'
+                    }`}>
                       {e.user !== currentUser && (
-                        <div className="message-sender">{e.user}</div>
+                        <div className={`font-semibold text-sm mb-1 ${
+                          e.user === currentUser ? 'text-indigo-100' : 'text-indigo-500'
+                        }`}>
+                          {e.user}
+                        </div>
                       )}
-                      <div className="message-content">
-                        <p>{e.text}</p>
+                      <div className="mb-2">
+                        <p className="leading-relaxed">{e.text}</p>
                       </div>
-                      <div className="message-time">
+                      <div className={`text-xs ${
+                        e.user === currentUser ? 'text-indigo-100' : 'text-gray-400'
+                      } text-right`}>
                         {formatTime(e.timestamp || Date.now())}
                       </div>
                     </div>
@@ -260,15 +291,15 @@ const Chat = () => {
                 ))}
               </>
             )}
-            <div ref={chatEndRef} className="chat-anchor" />
+            <div ref={chatEndRef} className="h-px" />
           </div>
 
-          {/* Sticky Message Input */}
-          <form onSubmit={sendMessage} className="message-form">
-            <div className="input-container">
+          {/* Message Input */}
+          <form onSubmit={sendMessage} className="p-4 lg:p-6 border-t border-gray-200 bg-white sticky bottom-0">
+            <div className="flex space-x-3 items-end max-w-full">
               <button 
                 type="button"
-                className="attach-btn"
+                className="w-11 h-11 bg-gray-100 hover:bg-indigo-500 text-gray-500 hover:text-white rounded-lg flex items-center justify-center transition-all duration-200 flex-shrink-0"
                 title="Attach file"
               >
                 <i className="bi bi-plus-lg"></i>
@@ -276,7 +307,7 @@ const Chat = () => {
               <input
                 ref={inRef}
                 type="text"
-                className="message-input"
+                className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all resize-none min-h-[44px] max-h-32"
                 placeholder="Type your message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -288,7 +319,7 @@ const Chat = () => {
                 }}
               />
               <button 
-                className="send-button" 
+                className="w-14 h-11 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg flex items-center justify-center transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none flex-shrink-0"
                 type="submit"
                 disabled={!message.trim()}
                 title="Send message"
@@ -296,8 +327,8 @@ const Chat = () => {
                 <i className="bi bi-send-fill"></i>
               </button>
             </div>
-            <div className="input-actions">
-              <span className="char-count">
+            <div className="flex justify-end mt-2">
+              <span className="text-xs text-gray-400">
                 {message.length}/500
               </span>
             </div>
@@ -306,29 +337,49 @@ const Chat = () => {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <div className="mobile-bottom-nav">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-gray-200 flex justify-around p-3 h-16 z-40">
         <button 
-          className={`nav-btn ${list ? 'active' : ''}`}
+          className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-all flex-1 max-w-20 ${
+            list ? 'text-indigo-500 bg-indigo-50' : 'text-gray-500'
+          }`}
           onClick={() => setList(!list)}
         >
-          <i className="bi bi-people"></i>
-          <span>Users</span>
+          <i className="bi bi-people text-lg"></i>
+          <span className="text-xs">Users</span>
         </button>
         <button 
-          className="nav-btn"
+          className="flex flex-col items-center space-y-1 p-2 rounded-lg transition-all text-gray-500 hover:text-indigo-500 flex-1 max-w-20"
           onClick={scrollToBottom}
         >
-          <i className="bi bi-arrow-down"></i>
-          <span>Bottom</span>
+          <i className="bi bi-arrow-down text-lg"></i>
+          <span className="text-xs">Bottom</span>
         </button>
         <button 
-          className={`nav-btn ${showAdminInfo ? 'active' : ''}`}
+          className={`flex flex-col items-center space-y-1 p-2 rounded-lg transition-all flex-1 max-w-20 ${
+            showAdminInfo ? 'text-indigo-500 bg-indigo-50' : 'text-gray-500'
+          }`}
           onClick={() => setShowAdminInfo(!showAdminInfo)}
         >
-          <i className="bi bi-info-circle"></i>
-          <span>Info</span>
+          <i className="bi bi-info-circle text-lg"></i>
+          <span className="text-xs">Info</span>
         </button>
       </div>
+
+      <style jsx>{`
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slide-up {
+          animation: slide-up 0.3s ease;
+        }
+      `}</style>
     </div>
   );
 };
