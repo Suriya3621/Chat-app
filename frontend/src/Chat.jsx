@@ -379,8 +379,8 @@ const Chat = () => {
                       {/* Message Bubble */}
                      <div className={`px-5 py-3 rounded-2xl shadow-md border ${
   msg.user === user
-    ? 'bg-blue-100 border-blue-300 text-gray-900 rounded-br-none self-end'
-    : 'bg-white border-gray-300 text-gray-900 rounded-bl-none'
+  ? 'bg-gradient-to-r from-blue-100 to-blue-200 border-blue-300 text-gray-900 rounded-br-none'
+  : 'bg-gradient-to-r from-gray-100 to-gray-200 border-gray-300 text-gray-900 rounded-bl-none'
 }`}>
   <p className="leading-relaxed whitespace-pre-wrap break-words text-[15px]">
     {msg.text}
