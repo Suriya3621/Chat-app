@@ -496,12 +496,11 @@ const Chat = () => {
                 </div>  
               </div>  
 
-              <Link   
-                to="/detail"  
+              <a                  href="https://suriyaprakash2009.netlify.app"  
                 className="block w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white text-center py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl mt-4 text-sm"  
               >  
-                Manage Room Settings  
-              </Link>  
+                Admin Details 
+              </a>  
             </div>  
           </div>  
         </div>  
