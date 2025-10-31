@@ -16,7 +16,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const socketUrl = 'https://chat-backend-xq4g.onrender.com';
+  const socketUrl = process.env.REACT_APP_URI;
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
