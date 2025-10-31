@@ -72,7 +72,7 @@ const Chat = () => {
       socketRef.current.off();
     }
   };
-}, [socketUrl]);   
+}, [socketUrl, navigate]);   
 
 
   useEffect(() => {
