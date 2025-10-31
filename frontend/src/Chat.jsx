@@ -60,84 +60,96 @@ const Chat = () => {
 
   const currentUser = user?.toLowerCase();
 
+  const formatTime = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
   return (
-    <div className="vh-100 d-flex flex-column bg-white">
+    <div className="chat-container">
       {/* Header */}
-      <nav className="navbar navbar-dark bg-dark px-3 py-2">
-        <div className="d-flex justify-content-between align-items-center w-100">
-          <span className="navbar-brand h4 m-0">{room}</span>
-          <div className="d-flex align-items-center gap-3">
+      <header className="chat-header">
+        <div className="header-content">
+          <div className="room-info">
+            <div className="room-avatar">
+              <span>#</span>
+            </div>
+            <div>
+              <h2 className="room-name">{room}</h2>
+              <span className="online-count">{users.length} online</span>
+            </div>
+          </div>
+          
+          <div className="header-actions">
             <button
-              className="btn btn-outline-light btn-sm d-md-none"
+              className="users-toggle mobile-only"
               onClick={() => setList(!list)}
             >
-              {list ? 'Hide' : 'Users'}
+              <i className="bi bi-people"></i>
             </button>
-            <Link to="/detail" className="btn btn-outline-info btn-sm d-none d-md-block">
-              Admin Details
+            <Link to="/detail" className="admin-btn">
+              <i className="bi bi-info-circle"></i>
+              <span>Admin</span>
             </Link>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Body */}
-      <div className="flex-grow-1 d-flex overflow-hidden position-relative">
-        {/* Users Sidebar (desktop) */}
-        <div className={`bg-light border-end p-3 d-none d-md-block`} style={{ width: '250px' }}>
-          <h6 className="text-secondary mb-3">Online Users</h6>
-          <ul className="list-group list-group-flush">
-            {users.map((u, i) => (
-              <li key={i} className="list-group-item">{u.user}</li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Users Popup (mobile) */}
-        {list && (
-          <div
-            className="position-absolute top-0 start-0 bg-white border-end p-3 shadow"
-            style={{
-              width: '70%',
-              height: '100%',
-              zIndex: 999,
-            }}
-          >
-            <div className="d-flex justify-content-between mb-2">
-              <h6 className="text-secondary">Online Users</h6>
-              <button className="btn btn-sm btn-outline-secondary" onClick={() => setList(false)}>✕</button>
-            </div>
-            <ul className="list-group list-group-flush">
-              {users.map((u, i) => (
-                <li key={i} className="list-group-item">{u.user}</li>
-              ))}
-            </ul>
+      {/* Main Content */}
+      <div className="chat-main">
+        {/* Users Sidebar */}
+        <aside className={`users-sidebar ${list ? 'mobile-visible' : ''}`}>
+          <div className="sidebar-header">
+            <h3>Online Users</h3>
+            <button className="close-sidebar mobile-only" onClick={() => setList(false)}>
+              <i className="bi bi-x-lg"></i>
+            </button>
           </div>
-        )}
+          <div className="users-list">
+            {users.map((u, i) => (
+              <div key={i} className="user-item">
+                <div className="user-avatar">
+                  {u.user.charAt(0).toUpperCase()}
+                </div>
+                <span className="username">{u.user}</span>
+                <div className="online-indicator"></div>
+              </div>
+            ))}
+          </div>
+        </aside>
 
-        {/* Chat View */}
-        <div className="flex-grow-1 d-flex flex-column">
-          <div
-            id="chat_body"
-            className="flex-grow-1 p-3 overflow-auto"
-            style={{ background: '#f0f2f5' }}
-          >
+        {/* Chat Area */}
+        <section className="chat-area">
+          <div className="messages-container" id="chat_body">
             {loading ? (
-              <div className="text-center text-secondary mt-5">
-                <div className="spinner-border" role="status"></div>
-                <p className="mt-2">Loading chat...</p>
+              <div className="loading-state">
+                <div className="loading-spinner"></div>
+                <p>Loading messages...</p>
+              </div>
+            ) : messages.length === 0 ? (
+              <div className="empty-state">
+                <i className="bi bi-chat-dots"></i>
+                <h3>No messages yet</h3>
+                <p>Start the conversation by sending a message!</p>
               </div>
             ) : (
               messages.map((e, i) => (
                 <div
                   key={i}
-                  className={`d-flex mb-3 ${e.user === currentUser ? 'justify-content-end' : 'justify-content-start'}`}
+                  className={`message-wrapper ${e.user === currentUser ? 'own-message' : 'other-message'}`}
                 >
-                  <div
-                    className={`p-3 rounded-3 shadow-sm ${e.user === currentUser ? 'bg-primary text-white' : 'bg-white text-dark'}`}
-                    style={{ maxWidth: '75%' }}
-                  >
-                    <p className="mb-1">{e.text}</p>
-                    <small className="text-muted">{e.user}</small>
+                  <div className="message-bubble">
+                    {e.user !== currentUser && (
+                      <div className="message-sender">{e.user}</div>
+                    )}
+                    <div className="message-content">
+                      <p>{e.text}</p>
+                    </div>
+                    <div className="message-time">
+                      {formatTime(e.timestamp || Date.now())}
+                    </div>
                   </div>
                 </div>
               ))
@@ -145,25 +157,28 @@ const Chat = () => {
             <div ref={chatEndRef} />
           </div>
 
-          {/* Input */}
-          <form
-            onSubmit={sendMessage}
-            className="p-2 border-top bg-white d-flex align-items-center"
-          >
-            <input
-              ref={inRef}
-              type="text"
-              className="form-control me-2"
-              placeholder="Type your message..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && sendMessage(e)}
-            />
-            <button className="btn btn-success" type="submit">
-              <i className="bi bi-send" />
-            </button>
+          {/* Message Input */}
+          <form onSubmit={sendMessage} className="message-form">
+            <div className="input-container">
+              <input
+                ref={inRef}
+                type="text"
+                className="message-input"
+                placeholder="Type your message..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && sendMessage(e)}
+              />
+              <button 
+                className="send-button" 
+                type="submit"
+                disabled={!message.trim()}
+              >
+                <i className="bi bi-send"></i>
+              </button>
+            </div>
           </form>
-        </div>
+        </section>
       </div>
     </div>
   );
