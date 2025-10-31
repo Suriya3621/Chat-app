@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Chat = () => {
   const inRef = useRef();
+  const navigate = useNavigate();
   const chatEndRef = useRef();
   const socketRef = useRef();
   const messagesContainerRef = useRef();
@@ -21,49 +22,58 @@ const Chat = () => {
   const socketUrl = process.env.REACT_APP_URI;
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const name = params.get('name');
-    const roomName = params.get('room');
+  const params = new URLSearchParams(window.location.search);
+  const name = params.get('name');
+  const roomName = params.get('room');
 
-    setUser(name);  
-    setRoom(roomName);  
+  setUser(name);
+  setRoom(roomName);
 
-    if (!name || !roomName) {  
-      console.error('Missing name or room parameters');  
-      return;  
-    }  
+  if (!name || !roomName) {
+    console.error('Missing name or room parameters');
+    return;
+  }
 
-    try {  
-      socketRef.current = io(socketUrl, {  
-        transports: ['websocket', 'polling']  
-      });  
+  try {
+    socketRef.current = io(socketUrl, {
+      transports: ['websocket', 'polling'],
+    });
 
-      socketRef.current.emit('join', { user: name, room: roomName });  
+    // emit join with a callback to handle errors
+   socketRef.current.emit('join', { user: name, room: roomName }, (error) => {
+  if (error) {
+    alert(error); // or show a nice popup
+    socketRef.current.disconnect();
+    navigate('/')
+  }
+});
 
-      socketRef.current.on('connect', () => {  
-        setIsConnected(true);  
-      });  
 
-      socketRef.current.on('disconnect', () => {  
-        setIsConnected(false);  
-      });  
+    socketRef.current.on('connect', () => {
+      setIsConnected(true);
+    });
 
-      socketRef.current.on('connect_error', () => {  
-        setIsConnected(false);  
-      });  
+    socketRef.current.on('disconnect', () => {
+      setIsConnected(false);
+    });
 
-    } catch (error) {  
-      console.error('Socket initialization error:', error);  
-      setIsConnected(false);  
-    }  
+    socketRef.current.on('connect_error', () => {
+      setIsConnected(false);
+    });
 
-    return () => {  
-      if (socketRef.current) {  
-        socketRef.current.disconnect();  
-        socketRef.current.off();  
-      }  
-    };
-  }, [socketUrl]);
+  } catch (error) {
+    console.error('Socket initialization error:', error);
+    setIsConnected(false);
+  }
+
+  return () => {
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current.off();
+    }
+  };
+}, [socketUrl]);   
+
 
   useEffect(() => {
     if (!socketRef.current) return;
