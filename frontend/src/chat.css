@@ -1,7 +1,37 @@
-/* chat.css - Minimal CSS for custom animations and Bootstrap Icons */
-@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css');
+/* chat.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-@keyframes slide-up {
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, transform, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Message animation */
+@keyframes messageSlide {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -12,37 +42,6 @@
   }
 }
 
-.animate-slide-up {
-  animation: slide-up 0.3s ease;
-}
-
-/* Custom scrollbar for webkit browsers */
-.messages-container::-webkit-scrollbar {
-  width: 6px;
-}
-
-.messages-container::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.messages-container::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-}
-
-.messages-container::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-
-/* Ensure smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Fix for mobile viewport */
-@media (max-width: 768px) {
-  .chat-container {
-    height: 100vh;
-    height: 100dvh; /* Dynamic viewport height for mobile */
-  }
+.message-slide {
+  animation: messageSlide 0.3s ease-out;
 }
