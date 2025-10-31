@@ -154,21 +154,9 @@ const Chat = () => {
   const sampleMessages = [
     {
       id: 1,
-      user: 'John',
+      user: 'AAAA',
       text: 'Hey everyone! Welcome to the chat! 👋',
       timestamp: Date.now() - 3600000
-    },
-    {
-      id: 2,
-      user: 'Sarah',
-      text: 'Thanks for having me! This looks great!',
-      timestamp: Date.now() - 3500000
-    },
-    {
-      id: 3,
-      user: user,
-      text: 'Glad you guys like it! Feel free to explore the features.',
-      timestamp: Date.now() - 3400000
     }
   ];
 
