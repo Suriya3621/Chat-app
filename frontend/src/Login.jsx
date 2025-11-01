@@ -86,7 +86,7 @@ const Login = () => {
           {/* Footer */}
           <div className="mt-6 text-center">
             <p className="text-gray-500 text-sm">
-              Secure • Encrypted • Real-time
+              Secure • User Friendly • Real-time
             </p>
           </div>
         </div>
